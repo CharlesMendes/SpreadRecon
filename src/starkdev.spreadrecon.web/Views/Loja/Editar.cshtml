@@ -1,0 +1,72 @@
+﻿@model starkdev.spreadrecon.model.Loja
+
+@{
+    ViewBag.Titulo = "Loja";
+    ViewBag.TituloPagina = "Editar Loja";
+
+    //Nomes de botões
+    ViewBag.Salvar = "Salvar";
+    ViewBag.Voltar = "Voltar";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        @using (Html.BeginForm("Editar", "Loja",
+                                    new { ReturnUrl = ViewBag.ReturnUrl },
+                                    FormMethod.Post, new { @class = "form-horizontal form-label-left", novalidate = "true" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <input type="button" value="@ViewBag.Voltar" onclick="location.href='@Url.Action("Index", "Loja")'" class="btn" />
+                <input type="submit" value="@ViewBag.Salvar" class="btn btn-success" />
+            </div>
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>@ViewBag.TituloPagina</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li>
+                            <a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="item form-group">
+                        @Html.LabelFor(model => model.nomeLoja, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(model => model.nomeLoja, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12", @required = "true" } })
+                            @Html.ValidationMessageFor(model => model.nomeLoja, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="item form-group">
+                        @Html.LabelFor(model => model.numeroCNPJLoja, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(model => model.numeroCNPJLoja, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12", @required = "true" } })
+                            @Html.ValidationMessageFor(model => model.numeroCNPJLoja, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="item form-group">
+                        @Html.LabelFor(model => model.numeroPDV, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(model => model.numeroPDV, new { htmlAttributes = new { @class = "form-control col-md-7 col-xs-12", @required = "true" } })
+                            @Html.ValidationMessageFor(model => model.numeroPDV, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="item form-group">
+                        @Html.LabelFor(model => model.isAtivo, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                        <div class="checkbox col-md-6 col-sm-6 col-xs-12">
+                            @Html.EditorFor(model => model.isAtivo)
+                            @Html.ValidationMessageFor(model => model.isAtivo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

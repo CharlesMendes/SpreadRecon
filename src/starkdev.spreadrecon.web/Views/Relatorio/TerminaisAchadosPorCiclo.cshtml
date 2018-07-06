@@ -1,0 +1,104 @@
+﻿@model starkdev.spreadrecon.model.Relatorio
+@using starkdev.utils
+
+@{
+    ViewBag.Titulo = "Relatório de Recebidos";
+    ViewBag.TituloPagina = "Relatório de Recebidos";
+    ViewBag.AcaoTabela = "Ações";
+    ViewBag.NenhumRegistroEncontrado = "Nenhum ciclo existente";
+
+    //Nomes de botões
+    ViewBag.Voltar = "Voltar";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <input type="button" value="@ViewBag.Voltar" onclick="location.href='@Url.Action("TerminaisAchados", "Relatorio")'" class="btn btn-primary" />
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>@ViewBag.TituloPagina</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <!-- start accordion -->
+                <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                    <div class="panel">
+                        <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                @if (Model.ExibirTerminaisAchados != null)
+                                {
+                                    <table id="datatable-export" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>@Html.DisplayNameFor(model => model.ExibirTerminaisAchados.FirstOrDefault().Detalhes.FirstOrDefault().telefone)</th>
+                                                <th>@Html.DisplayNameFor(model => model.ExibirTerminaisAchados.FirstOrDefault().Detalhes.FirstOrDefault().descricao)</th>
+                                                <th>@Html.DisplayNameFor(model => model.ExibirTerminaisAchados.FirstOrDefault().Detalhes.FirstOrDefault().valorPago)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                var idLinha = 1; //Contador de linha
+                                            }
+
+                                            @foreach (var item in Model.ExibirTerminaisAchados)
+                                            {
+                                                bool primeiraLinha = true; //define que esta na primeira linha
+                                                bool ultimaLinha = false; //define que esta na ultima linha
+
+                                                foreach (var detalhe in item.Detalhes)
+                                                {
+                                                    ultimaLinha = detalhe.descricao.Equals("Total");
+
+                                                    <tr style="@Html.Raw(ultimaLinha ? "border-bottom: solid;" : "")">
+                                                        <th scope="row">
+                                                            @{
+                                                                @Html.Label(idLinha.ToString())
+                                                                idLinha++;
+                                                            }
+                                                        </th>
+                                                        <th scope="row">
+                                                            @if (primeiraLinha)
+                                                            {
+                                                                //Apenas exibe o telefone se for a primeira linha do grupo
+                                                                @Html.DisplayFor(modelItem => detalhe.telefone)
+                                                            }
+                                                        </th>
+                                                        @if (ultimaLinha)
+                                                        {
+                                                            //Se é a linha do total, aplica formatação especial com negrito
+                                                            <td><div class="total pull-right">@Html.DisplayFor(modelItem => detalhe.descricao)</div></td>
+                                                            <td><div class="total">@Html.DisplayFor(modelItem => detalhe.valorPago)</div></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            //caso contrario continua exibindo os dados com a formatacao basica
+                                                            <td>@Html.DisplayFor(modelItem => detalhe.descricao)</td>
+                                                            <td>@Html.DisplayFor(modelItem => detalhe.valorPago)</td>
+                                                        }
+                                                    </tr>
+
+                                                                        //Marca que ja passou da primeira linha
+                                                                        primeiraLinha = false;
+                                                                    }
+                                                                }
+                                        </tbody>
+                                    </table>
+                                                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of accordion -->
+            </div>
+        </div>
+    </div>
+</div>

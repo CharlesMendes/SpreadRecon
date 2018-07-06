@@ -1,0 +1,129 @@
+﻿@model IEnumerable<starkdev.spreadrecon.model.ImportacaoPlanilha>
+
+@{
+    ViewBag.Titulo = "Pagamento Operadora";
+    ViewBag.TituloPagina = "Pagamento Operadora - Importação";
+    ViewBag.AcaoTabela = "Ações";
+
+    //Nomes de botões
+    ViewBag.Importar = "Importar";
+    ViewBag.Fechar = "Fechar";
+
+    //Modal
+    ViewBag.Modal_Titulo = "Importar Arquivo";
+    ViewBag.Modal_SubTitulo = "Selecione uma planilha excel para importar";
+    ViewBag.Modal_Descricao = "O arquivo deve ser o gerado operadora Oi (pagamentos)";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <!-- modal upload -->
+        @using (Html.BeginForm("Upload", "PagamentoOperadora", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            if (!User.IsInRole("ADMIN"))
+            {
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal-upload">@ViewBag.Modal_Titulo</button>
+            }
+            <div class="modal fade modal-upload" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel2">@ViewBag.Modal_Titulo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h4>@ViewBag.Modal_SubTitulo</h4>
+                            <p>@ViewBag.Modal_Descricao</p>
+                            <p><input type="file" class="btn btn-primary" name="uploadArquivo" /></p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-primary" name="Submit" value="@ViewBag.Importar" />
+                            <input type="button" class="btn btn-link" name="Submit" data-dismiss="modal" value="@ViewBag.Fechar" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+        <!-- /modals -->
+        @*<input type="button" value="@ViewBag.Novo" onclick="location.href='@Url.Action("Index", "VendasViva")'" class="btn btn-primary" />*@
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>@ViewBag.TituloPagina</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <!-- start accordion -->
+                <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                    <div class="panel">
+                        <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <table id="datatable-pagination" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>@Html.DisplayNameFor(model => model.id)</th>
+                                            <th>@Html.DisplayNameFor(model => model.usuarioImportacao.nome)</th>
+                                            <th>@Html.DisplayNameFor(model => model.loja.nomeLoja)</th>
+                                            <th>@Html.DisplayNameFor(model => model.nomeArquivoOriginal)</th>
+                                            <th>@Html.DisplayNameFor(model => model.qtdImportacaoSucesso)</th>
+                                            <th>@Html.DisplayNameFor(model => model.qtdImportacaoIgnorada)</th>
+                                            <th>@Html.DisplayNameFor(model => model.dataInicioProcessamento)</th>
+                                            <th>@Html.DisplayNameFor(model => model.dataFimProcessamento)</th>
+                                            <th>@Html.DisplayNameFor(model => model.status.nomeStatus)</th>
+                                            <th>@ViewBag.AcaoTabela</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            var nomeLoja = string.Format("{0}- {1}", item.loja.id, item.loja.nomeLoja);
+                                            <tr>
+                                                <th scope="row">@Html.DisplayFor(modelItem => item.id)</th>
+                                                <td>@Html.DisplayFor(modelItem => item.usuarioImportacao.nome)</td>
+                                                <td>@nomeLoja</td>
+                                                <td>@Html.DisplayFor(modelItem => item.nomeArquivoOriginal)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.qtdImportacaoSucesso)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.qtdImportacaoIgnorada)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.dataInicioProcessamento)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.dataFimProcessamento)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.status.nomeStatus)</td>
+                                                <td>
+                                                    @if (!(item.idStatus.Equals(2) || item.idStatus.Equals(3) || item.idStatus.Equals(4)))
+                                                    {
+                                                        //Se status for importando, cancelado ou pendente, não exibe o botao abaixo
+                                                        <a href="@Url.Action("Linhas", "PagamentoOperadora", new { id = item.id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i></a>
+                                                        if (item.qtdImportacaoIgnorada > 0) //Exibe opção de download log apenas se houver erros
+                                                        {
+                                                            <a href="@Url.Action("Download", "PagamentoOperadora", new { fileName = item.nomeArquivoErro })" class="btn btn-warning btn-xs" target="_blank"><i class="fa fa-download"></i></a>
+                                                        }
+                                                    }
+                                                    @if (item.idStatus.Equals(1) || item.idStatus.Equals(3) || item.idStatus.Equals(4))
+                                                    {
+                                                        //Se status for importação concluída, cancelado ou pendente, exibe botão para excluir a importação
+                                                        <a href="@Url.Action("ExcluirImportacao", "PagamentoOperadora", new { idImportacao = item.id })" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of accordion -->
+            </div>
+        </div>
+    </div>
+</div>

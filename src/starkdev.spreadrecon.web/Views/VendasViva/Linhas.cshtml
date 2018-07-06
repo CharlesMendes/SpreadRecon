@@ -1,0 +1,71 @@
+﻿@model IEnumerable<starkdev.spreadrecon.model.VendasViva>
+
+@{
+    ViewBag.Titulo = "Vendas Loja";
+    ViewBag.TituloPagina = "Vendas Loja - Linhas";
+
+    //Nomes de botões
+    ViewBag.Voltar = "Voltar";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <input type="button" value="@ViewBag.Voltar" onclick="location.href='@Url.Action("Index", "VendasViva")'" class="btn btn-primary" />
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>@ViewBag.TituloPagina</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <!-- start accordion -->
+                <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                    <div class="panel">
+                        <div id="collapseOne1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <table id="datatable-export" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>@Html.DisplayNameFor(model => model.id)</th>
+                                            <th>@Html.DisplayNameFor(model => model.numeroLinha)</th>
+                                            <th>@Html.DisplayNameFor(model => model.nomeVendedor)</th>
+                                            <th>@Html.DisplayNameFor(model => model.dataVenda)</th>
+                                            <th>@Html.DisplayNameFor(model => model.nomePlano)</th>
+                                            <th>@Html.DisplayNameFor(model => model.nomeTitular)</th>
+                                            <th>@Html.DisplayNameFor(model => model.valorVenda)</th>
+                                            <th>@Html.DisplayNameFor(model => model.status.nomeStatus)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <th scope="row">@Html.DisplayFor(modelItem => item.id)</th>
+                                                <td>@Html.DisplayFor(modelItem => item.numeroLinha)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.nomeVendedor)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.dataVenda)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.nomePlano)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.nomeTitular)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.valorVenda)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.status.nomeStatus)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of accordion -->
+            </div>
+        </div>
+    </div>
+</div>
